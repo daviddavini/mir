@@ -1,5 +1,6 @@
 import subprocess
 import re
+from hashlib import sha512
 from base64 import b64encode
 from urllib.parse import quote
 
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 from .constants import CLEAN_DIR, CACHE_DIR
 
 def filename(url):
+    return sha512(url.encode()).hexdigest()
     return quote(url, '')
     return b64encode(url.encode()).decode()
 
