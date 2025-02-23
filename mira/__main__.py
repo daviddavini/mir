@@ -1,14 +1,12 @@
 import subprocess
 from argparse import ArgumentParser
-from urllib.parse import urlencode
 
-from .filter import filter
+from .craft import search_url, follow_url
 from .fetch import fetch
-
-def search_url(query):
-    query = " ".join(query)
-    query = urlencode({'q': query})
-    return f'www.duckduckgo.com/?{query}'
+from .filter import filter
+from .constants import CURRENT_PATH
+from .constants import CACHE_DIR, CLEAN_DIR
+from .fetch import filename
 
 def main():
     parser = ArgumentParser()
@@ -21,18 +19,31 @@ def main():
     parse_search = subparsers.add_parser('search', aliases='s')
     parse_search.set_defaults(reload=True)
     parse_search.add_argument('query', nargs='+')
+    parse_follow = subparsers.add_parser('follow', aliases='f')
+    parse_follow.set_defaults(reload=True)
+    parse_follow.add_argument('target')
     args = parser.parse_args()
 
-    if args.command == 'search':
+    if args.command in ['search', 's']:
         url = search_url(args.query)
-    elif args.command == 'goto':
+    elif args.command in ['goto', 'g']:
         url = args.url
+    elif args.command in ['follow', 'f']:
+        url = follow_url(args.target)
+    elif not args.command:
+        url = CURRENT_PATH.read_text()
+
+    CURRENT_PATH.write_text(url)
 
     # use lynx to get the html
-    html = fetch(url, args.reload)
+    new_url, html = fetch(url, args.reload)
 
     # filter the html, yoinking all the gunk
-    new_html = filter(url, html, args.verbose)
+    new_html = filter(new_url, html, args.verbose)
+
+    # cache under the original url
+    html_path = CLEAN_DIR / f'{filename(url)}.html'
+    html_path.write_text(new_html)
 
     # send the result to w3m for display
     subprocess.run(['w3m', '-T', 'text/html', '-dump'], input=new_html.encode())

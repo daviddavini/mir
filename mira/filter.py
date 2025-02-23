@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from .yoinks import VITAL, MAIN, EXTRA
-from .yoinks import google, stackexchange
+from .yoinks import duckduckgo, stackexchange
 
 def keepers(soup, level):
     if hasattr(soup, 'keep') and soup.keep and soup.level <= level:
@@ -43,11 +43,17 @@ def filter(url: str, html: str, verbose: int):
         tag.decompose()
 
     # call the yoink method specific to the website
+    yoink = True
     if stackexchange.criteria(url):
         stackexchange.yoink(soup)
+    elif duckduckgo.criteria(url):
+        duckduckgo.yoink(soup)
     else:
-        google.yoink(soup)
+        yoink = False
 
-    cleanup(soup, soup.body, mode)
-    return str(soup)
+    if yoink:
+        cleanup(soup, soup.body, mode)
+    new_html = str(soup)
+    
+    return new_html
 

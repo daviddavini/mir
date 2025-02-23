@@ -5,7 +5,7 @@ import bs4
 from . import preserve, keep, trash, VITAL, MAIN, EXTRA
 
 def criteria(url: str):
-    pattern = re.compile(r'google.com/search')
+    pattern = re.compile(r'duckduckgo.com/.*\?q=.*')
     return pattern.search(url)
 
 def yoink(soup: bs4.BeautifulSoup):
