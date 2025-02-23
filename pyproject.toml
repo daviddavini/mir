@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mira"
+version = "2025.2.23"
+dependencies = [
+  "beautifulsoup4",
+]
+requires-python = ">= 3.8"
+authors = [
+  {name = "David Davini", email = "hello@daviddavini.com"},
+]
+maintainers = [
+  {name = "David Davini", email = "hello@daviddavini.com"}
+]
+description = "still in the works..."
+readme = "README.md"
+
+[project.scripts]
+mira = "mira.__main__:main"
