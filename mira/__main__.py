@@ -1,4 +1,5 @@
 import subprocess
+import os
 from argparse import ArgumentParser
 
 from .craft import search_url, follow_url
@@ -21,19 +22,20 @@ def main():
     parse_search.add_argument('query', nargs='+')
     parse_follow = subparsers.add_parser('follow', aliases='f')
     parse_follow.set_defaults(reload=True)
-    parse_follow.add_argument('target')
+    parse_follow.add_argument('target', default=0)
     args = parser.parse_args()
 
     if args.command in ['search', 's']:
         url = search_url(args.query)
+        CURRENT_PATH.write_text(url)
     elif args.command in ['goto', 'g']:
         url = args.url
+        CURRENT_PATH.write_text(url)
     elif args.command in ['follow', 'f']:
         url = follow_url(args.target)
     elif not args.command:
         url = CURRENT_PATH.read_text()
 
-    CURRENT_PATH.write_text(url)
 
     # use lynx to get the html
     new_url, html = fetch(url, args.reload)
@@ -46,7 +48,11 @@ def main():
     html_path.write_text(new_html)
 
     # send the result to w3m for display
-    subprocess.run(['w3m', '-T', 'text/html', '-dump'], input=new_html.encode())
+    output = subprocess.check_output(['w3m', '-T', 'text/html', '-dump'], input=new_html.encode()).decode()
+    if len(output.splitlines()) <= os.get_terminal_size().lines-2:
+        print(output)
+    else:
+        subprocess.run(['less'], input=output.encode())
 
 if __name__ == '__main__':
     main()
