@@ -15,8 +15,5 @@ def yoink(soup: bs4.BeautifulSoup):
         preserve(link, VITAL)
     for snippet in soup.select('tr:has(.result-snippet)'):
         preserve(snippet, EXTRA)
-    import pdb; pdb.set_trace()
     for text in soup.select('tr:has(.link-text)'):
         preserve(text, MAIN)
-        # get the whitespace too
-        preserve(text.findNext('tr'), MAIN)

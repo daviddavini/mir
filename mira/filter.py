@@ -36,8 +36,8 @@ def cleanup(soup, tag, level=1e100, depth=1):
             x.insert(0, soup.new_tag(f'h{min(depth,6)}', string=x.label.title()+':'))
         tag.append(copy.copy(x))
 
-def filter(url: str, html: str, mode: str):
-    mode = {'vital':VITAL,'main':MAIN,'extra':EXTRA}[mode]
+def filter(url: str, html: str, verbose: int):
+    mode = {0:VITAL,1:MAIN,2:EXTRA}[verbose]
     soup = BeautifulSoup(html, 'html.parser')
     for tag in soup(['script', 'style', 'nav', 'footer']):
         tag.decompose()

@@ -10,9 +10,9 @@ def criteria(url: str):
 
 def yoink(soup: bs4.BeautifulSoup):
     question = soup.find(class_='question')
-    keep(question, VITAL, label='question')
+    keep(question, MAIN, label='question')
     prose = question.find(class_='s-prose')
-    preserve(prose, VITAL)
+    preserve(prose, MAIN)
     trash(prose.aside, EXTRA)
     
     for com_list in soup(class_='comments-list'):
@@ -27,7 +27,7 @@ def yoink(soup: bs4.BeautifulSoup):
     
 #    keep(soup.find(id='answers'))
 
-    for answer in soup(class_='answer'):
-        keep(answer, VITAL, label="answer")
+    for i, answer in enumerate(soup(class_='answer')):
+        keep(answer, MAIN if i else VITAL, label="answer")
         preserve(answer.find(class_='s-prose'), VITAL)
 
