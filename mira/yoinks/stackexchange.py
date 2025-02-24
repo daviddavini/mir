@@ -2,7 +2,7 @@ import re
 
 import bs4
 
-from . import preserve, keep, trash, VITAL, MAIN, EXTRA
+from . import preserve, keep, trash, ZEN, VITAL, MAIN, EXTRA
 
 def criteria(url: str):
     pattern = re.compile(r'((stackexchange|stackoverflow|stackapps|superuser|serverfault|askubuntu)\.com|mathoverflow.net)\/questions\/.*\/')
@@ -25,9 +25,7 @@ def yoink(soup: bs4.BeautifulSoup):
     for votes in soup(class_='js-vote-count'):
         preserve(votes, EXTRA)
     
-#    keep(soup.find(id='answers'))
-
     for i, answer in enumerate(soup(class_='answer')):
-        keep(answer, MAIN if i else VITAL, label="answer")
-        preserve(answer.find(class_='s-prose'), VITAL)
+        keep(answer, VITAL if i else ZEN, label="answer")
+        preserve(answer.find(class_='s-prose'), VITAL if i else ZEN)
 

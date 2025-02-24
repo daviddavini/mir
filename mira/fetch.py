@@ -19,21 +19,21 @@ def fetch_filtered(url):
         return html_path.read_text()
     return None
 
-def _fetch(url):
+def _fetch(url, reload):
     html_path = CACHE_DIR / f'{filename(url)}.html'
-    if html_path.exists():
+    if not reload and html_path.exists():
         html = html_path.read_text()
     else:
-        html = subprocess.check_output(['lynx', '-base', '-source', url]).decode()
+        html = subprocess.check_output(['lynx', '-base', '-source', '-preparsed', url]).decode()
         html_path.write_text(html)
     return html
 
 def fetch(url, reload=False):
-    html = _fetch(url)
+    html = _fetch(url, reload)
     soup = BeautifulSoup(html, 'html.parser')
     meta_tag = soup.find('meta', attrs={'http-equiv': 'refresh'})
     if meta_tag:
         match = re.search(r'URL=([^\s]+)', meta_tag['content'])
         url = match.group(1)
-        html = _fetch(url)
+        html = _fetch(url, reload)
     return url, html
