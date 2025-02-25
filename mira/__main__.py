@@ -31,21 +31,12 @@ def main():
 
     if args.command in ['search', 's']:
         url = search_url(args.query)
-        with CURRENT_PATH.open('a') as f:
-            f.write('\n'+url)
     elif args.command in ['goto', 'g']:
         url = args.url
-        with CURRENT_PATH.open('a') as f:
-            f.write('\n'+url)
     elif args.command in ['view', 'v']:
         url = follow_url(args.target)
-        if args.jump:
-            with CURRENT_PATH.open('a') as f:
-                f.write('\n'+url)
     elif args.command in ['jump', 'j']:
         url = follow_url(args.target)
-        with CURRENT_PATH.open('a') as f:
-            f.write('\n'+url)
     elif args.command in ['back', 'b']:
         urls = CURRENT_PATH.read_text().splitlines()
         with CURRENT_PATH.open('w') as f:
@@ -57,6 +48,14 @@ def main():
     # use lynx to get the html
     new_url, html = fetch(url, args.reload)
 
+    # save the new url, to include redirects
+    if args.command in ['search', 's', 'goto', 'g', 'jump', 'j']:
+        with CURRENT_PATH.open('a') as f:
+            f.write('\n'+new_url)
+    elif args.command in ['view', 'v'] and args.jump:
+        with CURRENT_PATH.open('a') as f:
+            f.write('\n'+new_url)
+
     if args.url:
         print(new_url)
         return
@@ -65,7 +64,7 @@ def main():
     new_html, yoink = filter(new_url, html, args.verbose)
 
     # cache under the original url
-    html_path = CLEAN_DIR / f'{filename(url)}.html'
+    html_path = CLEAN_DIR / f'{filename(new_url)}.html'
     html_path.write_text(new_html)
 
     # send the result to w3m for display

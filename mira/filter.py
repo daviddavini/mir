@@ -4,7 +4,7 @@ import copy
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from .yoinks import duckduckgo, stackexchange, cnn, bbc, github
+from .yoinks import duckduckgo, stackexchange, cnn, bbc, github, wikipedia
 
 def keepers(soup, level):
     if hasattr(soup, 'keep') and soup.keep and soup.level <= level:
@@ -67,6 +67,8 @@ def filter(url: str, html: str, mode: int):
         bbc.yoink(soup)
     elif github.criteria(url):
         github.yoink(soup)
+    elif wikipedia.criteria(url):
+        wikipedia.yoink(soup)
     else:
         yoink = False
 
@@ -75,7 +77,7 @@ def filter(url: str, html: str, mode: int):
 
     # label all of the links with numbers
     for i, link in enumerate(soup('a')):
-        link.insert(0, f'[{i}] ')
+        link.insert(0, '{'+str(i)+'} ')
     new_html = str(soup)
     return new_html, yoink
 
