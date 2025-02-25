@@ -5,7 +5,7 @@ import bs4
 from . import preserve, keep, trash, ZEN, VITAL, MAIN, EXTRA
 
 def criteria(url: str):
-    pattern = re.compile(r'www.bbc.com/news/\S+')
+    pattern = re.compile(r'www.bbc.(com|co.uk)\/news(\/[^\s/]+){1,2}$')
     return pattern.search(url)
 
 def yoink(soup: bs4.BeautifulSoup):

@@ -21,7 +21,7 @@ def normalize(link):
     return link
 
 def follow_url(target):
-    url = CURRENT_PATH.read_text()
+    url = CURRENT_PATH.read_text().splitlines()[-1]
     html = fetch_filtered(url)
     links = hyperlinks(html)
     links = [normalize(l) for l in links]

@@ -4,7 +4,7 @@ import copy
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from .yoinks import duckduckgo, stackexchange, cnn, bbc
+from .yoinks import duckduckgo, stackexchange, cnn, bbc, github
 
 def keepers(soup, level):
     if hasattr(soup, 'keep') and soup.keep and soup.level <= level:
@@ -39,8 +39,20 @@ def cleanup(soup, tag, level=1e100, depth=1):
         tag.append(copy.copy(x))
 
 def filter(url: str, html: str, mode: int):
+    if mode == 4:
+        return html, False
     soup = BeautifulSoup(html, 'html.parser')
     for tag in soup(['script', 'style', 'nav', 'header', 'footer']):
+        tag.decompose()
+    for tag in soup(class_=['header', 'footer']):
+        tag.decompose()
+
+    for tag in soup(['aside', 'details', 'address']):
+        tag.decompose()
+
+    for tag in soup(role='navigation'):
+        tag.decompose()
+    for tag in soup(attrs={'aria-controls':'navigation'}):
         tag.decompose()
 
     # call the yoink method specific to the website
@@ -53,6 +65,8 @@ def filter(url: str, html: str, mode: int):
         cnn.yoink(soup)
     elif bbc.criteria(url):
         bbc.yoink(soup)
+    elif github.criteria(url):
+        github.yoink(soup)
     else:
         yoink = False
 

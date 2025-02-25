@@ -1,6 +1,7 @@
-VITAL = 0
-MAIN = 5
-EXTRA = 10
+ZEN = 0
+VITAL = 1
+MAIN = 2
+EXTRA = 3
 
 def keep(soup, level=0, label=None):
     if not soup:
