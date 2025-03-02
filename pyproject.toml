@@ -3,7 +3,7 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mira"
+name = "mir"
 version = "2025.2.23"
 dependencies = [
   "beautifulsoup4",
@@ -19,4 +19,4 @@ description = "still in the works..."
 readme = "README.md"
 
 [project.scripts]
-mira = "mira.__main__:main"
+mir = "mir.__main__:main"
