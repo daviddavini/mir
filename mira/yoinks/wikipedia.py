@@ -34,6 +34,8 @@ def yoink(soup: bs4.BeautifulSoup):
         trash(x)
     for x in content.select(f'img'):
         trash(x)
+    for x in content.select('.sidebar'):
+        trash(x, EXTRA)
     for x in content.select('.side-box'):
         trash(x, EXTRA)
     for x in content.select('.mw-collapsible,.mw-collapsed'):

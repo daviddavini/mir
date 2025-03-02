@@ -14,7 +14,7 @@ def main():
     parent_parser.add_argument('-v', '--verbose', action='count', default=0)
     parent_parser.add_argument('-r', '--reload', action='store_true', default=False)
     parent_parser.add_argument('--raw', action='store_true', default=False)
-    parent_parser.add_argument('-u', '--url', action='store_true')
+    parent_parser.add_argument('-u', '--print-url', action='store_true')
     parser = ArgumentParser(parents=[parent_parser])
     subparsers = parser.add_subparsers(dest='command')
     parse_goto = subparsers.add_parser('goto', aliases='g', parents=[parent_parser])
@@ -56,7 +56,7 @@ def main():
         with CURRENT_PATH.open('a') as f:
             f.write('\n'+new_url)
 
-    if args.url:
+    if args.print_url:
         print(new_url)
         return
 
@@ -75,6 +75,7 @@ def main():
         return
     size = os.get_terminal_size()
     output = subprocess.check_output(['w3m', '-T', 'text/html', '-dump', '-cols', str(size.columns)], input=new_html.encode()).decode()
+    output = subprocess.check_output(['w3m', '-T', 'text/html', '-dump'], input=new_html.encode()).decode()
     output = output.strip()
     if len(output.splitlines()) <= size.lines-2:
         print(output)

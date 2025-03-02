@@ -39,9 +39,9 @@ def cleanup(soup, tag, level=1e100, depth=1):
         tag.append(copy.copy(x))
 
 def filter(url: str, html: str, mode: int):
-    if mode == 4:
-        return html, False
     soup = BeautifulSoup(html, 'html.parser')
+    if mode == 4:
+        return soup.prettify(), False
     for tag in soup(['script', 'style', 'nav', 'header', 'footer']):
         tag.decompose()
     for tag in soup(class_=['header', 'footer']):
@@ -78,6 +78,8 @@ def filter(url: str, html: str, mode: int):
     # label all of the links with numbers
     for i, link in enumerate(soup('a')):
         link.insert(0, '{'+str(i)+'} ')
-    new_html = str(soup)
+
+    # put on some makeup
+    new_html = soup.prettify()
     return new_html, yoink
 
