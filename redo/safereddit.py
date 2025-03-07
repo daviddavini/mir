@@ -6,7 +6,7 @@ class Comment:
     replies: list['Comment'] = '.replies .comment'
 
 @scraper
-class Reddit:
+class SafeReddit:
     title = '.post_title'
     body: str = '.post_body'
     comments: list[Comment] = '.comment'
