@@ -1,3 +1,5 @@
+import subprocess
+
 from typing import get_type_hints, get_origin, get_args
 from bs4 import BeautifulSoup
 
@@ -16,7 +18,10 @@ def _scrape(soup, tp, sel):
         return [_scrape(t, tp, None) for t in select_top(soup,sel)]
     else:
         s = soup.select_one(sel) if sel else soup
+        if s is None:
+            raise ValueError(f"Selector did not match any HTML element: {sel}")
         if tp == str:
+            return subprocess.run(['w3m','-T','text/html'],capture_output=True,text=True,input=str(s)).stdout.strip('\n')
             return s.get_text('\n\n',strip=True)
         elif tp._is_scraper:
             return tp(s)
