@@ -21,8 +21,8 @@ def _scrape(soup, tp, sel):
         if s is None:
             raise ValueError(f"Selector did not match any HTML element: {sel}")
         if tp == str:
+            return s.get_text(' ', strip=True)
             return subprocess.run(['w3m','-T','text/html'],capture_output=True,text=True,input=str(s)).stdout.strip('\n')
-            return s.get_text('\n\n',strip=True)
         elif tp._is_scraper:
             return tp(s)
 

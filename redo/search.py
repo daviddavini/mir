@@ -23,7 +23,7 @@ for res in results:
         html = fetch(res)
         print(Wikipedia(html).paragraphs[0])
         break
-    if False and 'reddit.com' in res:
+    if 'reddit.com' in res:
         res = res.replace('www.reddit.com','safereddit.com')
         html = fetch(res)
         print(SafeReddit(html).comments[0].body)
